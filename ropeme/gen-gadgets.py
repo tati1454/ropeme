@@ -29,7 +29,7 @@ if (__name__ == "__main__"):
 	try:
 		binfile = sys.argv[1]
 	except:
-		print "Usage: " + sys.argv[0] + "binfile [depth]"
+		print("Usage: " + sys.argv[0] + "binfile [depth]")
 		sys.exit(-1)
 	try:
 		depth = int(sys.argv[2])

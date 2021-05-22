@@ -76,10 +76,10 @@ class ROPGadget:
 
         block_size = 1024 * 1024 # process 1 MB a time
         block_count = len(code)/block_size + 1
-        print >>sys.stderr, "Generating gadgets for " + filename + " with backward depth=" + str(backward_depth)
-        print >>sys.stderr, "It may take few minutes depends on the depth and file size..."
+        print("Generating gadgets for " + filename + " with backward depth=" + str(backward_depth))
+        print("It may take few minutes depends on the depth and file size...")
         for count in range(block_count):
-            print >>sys.stderr, "Processing code block %d/%d" % (count+1, block_count)
+            print("Processing code block %d/%d" % (count+1, block_count))
             block_start = count * block_size
             disassembly = distorm.DecodeGenerator(block_start, code[block_start:block_start + block_size], self.__decode_option)
 
@@ -99,7 +99,7 @@ class ROPGadget:
                     hexbyte = bincode[-((l-i) + (self.__backward_depth * 8)) : -(l-i)]
                     self.__process_backward(hexbyte, base_addr + offset + i - 1)
 
-        print >>sys.stderr, "Generated " + str(self.__asmgadget.get_size()) + " gadgets"
+        print("Generated " + str(self.__asmgadget.get_size()) + " gadgets")
         
         return True
 
@@ -207,19 +207,19 @@ class ROPGadget:
     #
     def load_asm(self, filename):
         fp = open(filename, 'rb')
-        print >>sys.stderr, "Loading asm gadgets from file:", filename, "..."
+        print("Loading asm gadgets from file:", filename, "...")
         self.__gadget_info = pickle.load(fp)
         self.__asmgadget = pickle.load(fp)
         fp.close()
-        print >>sys.stderr, "Loaded", self.__asmgadget.get_size(), "gadgets"
-        print >>sys.stderr, "ELF base address:", hex(self.__gadget_info["base_addr"])
+        print("Loaded", self.__asmgadget.get_size(), "gadgets")
+        print("ELF base address:", hex(self.__gadget_info["base_addr"]))
 
     #
     # dump the gadgets to data file
     #
     def save_asm(self, filename):
         fp = open(filename, 'w')
-        print >>sys.stderr, "Dumping asm gadgets to file:", filename, "..."
+        print("Dumping asm gadgets to file:", filename, "...")
         pickle.dump(self.__gadget_info, fp, 0)
         pickle.dump(self.__asmgadget, fp, 0)
         fp.close()

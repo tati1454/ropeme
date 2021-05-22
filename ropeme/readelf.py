@@ -49,7 +49,7 @@ class Elf:
         self._libc_offset = {"mprotect":0, "read":0, "execve":0, "execv":0, "execvp":0, "system":0, "setreuid":0, "seteuid":0}
 
         if os.access(self.READELF, os.X_OK) == False or os.access(self.OBJDUMP, os.X_OK) == False:
-            print "Cannot execute %s, please install/check binutils" % self.READELF
+            print("Cannot execute %s, please install/check binutils" % self.READELF)
             sys.exit(-1)
 
     # parse single line of output
@@ -83,10 +83,10 @@ class Elf:
 
     # print elf headers
     def print_headers(self):
-        print "--- ELF headers ---"
-        print "Header \t\t Address"
+        print("--- ELF headers ---")
+        print("Header \t\t Address")
         for (k, v) in self._headers.iteritems():
-            print "%s \t %s" % (k.ljust(10), hex(v))
+            print("%s \t %s" % (k.ljust(10), hex(v)))
 
     # get PLT entries
     def read_plt(self, binfile):
@@ -112,10 +112,10 @@ class Elf:
 
     # print PLT entries
     def print_plt(self):
-        print "--- PLT entries ---"
-        print "Function \t\t Address"
+        print("--- PLT entries ---")
+        print("Function \t\t Address")
         for (k, v) in self._plt.iteritems():
-            print "%s \t %s" % (k.ljust(20), hex(v))
+            print("%s \t %s" % (k.ljust(20), hex(v)))
 
     # get GOT entries
     def read_got(self, binfile):
@@ -142,10 +142,10 @@ class Elf:
 
     # print GOT table
     def print_got(self):
-        print "--- GOT table ---"
-        print "Function \t\t Address"
+        print("--- GOT table ---")
+        print("Function \t\t Address")
         for (k, v) in self._got.iteritems():
-            print "%s \t %s" % (k.ljust(20), hex(v))
+            print("%s \t %s" % (k.ljust(20), hex(v)))
 
     # get libc offset for functions in plt and some predefined ones
     def read_libc_offset(self, libc = LIBC, *functions):
@@ -179,10 +179,10 @@ class Elf:
 
     # print libc offsets
     def print_libc_offset(self):
-        print "--- LIBC offset ---"
-        print "Function \t\t Address"
+        print("--- LIBC offset ---")
+        print("Function \t\t Address")
         for (k, v) in self._libc_offset.iteritems():
-            print "%s \t %s" % (k.ljust(20), hex(v))
+            print("%s \t %s" % (k.ljust(20), hex(v)))
 
 if __name__ == '__main__':
     import sys
@@ -192,7 +192,7 @@ if __name__ == '__main__':
     e.read_plt(binfile)
     e.read_got(binfile)
     e.read_libc_offset()
-    print "Base address:", hex(e.get_header("base"))
+    print("Base address:", hex(e.get_header("base")))
     e.print_headers()
     e.print_plt()
     e.print_got()

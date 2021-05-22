@@ -29,7 +29,7 @@ if (__name__ == "__main__"):
 	try:
 		gadget_file = sys.argv[1]
 	except:
-		print "Usage: " + sys.argv[0] + " gadget_file asm_code"
+		print("Usage: " + sys.argv[0] + " gadget_file asm_code")
 		sys.exit(-1)
 	g.load_asm(gadget_file)
 	
@@ -40,5 +40,5 @@ if (__name__ == "__main__"):
 	for result in g.asm_search(code):
 		if len(result) > 1:
 			(code, offset) = result
-			print hex(offset), ":", code
+			print(hex(offset), ":", code)
 	

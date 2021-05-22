@@ -54,7 +54,7 @@ class ROPShell(cmd.Cmd):
         try:
             open(file_in, 'r')
         except:             
-            print "Cannot access " + file_in
+            print("Cannot access " + file_in)
             return ''
         
         if self.__gadgets.info()["hash"] != "": # remove the old gadget
@@ -63,15 +63,15 @@ class ROPShell(cmd.Cmd):
             
         self.__gadgets.generate(file_in, depth)
         self.__gadgets.save_asm(file_out)           
-        print "OK"
+        print("OK")
         return ''
         
     def help_generate(self):
-        print '\n'.join([ 'Generate ROP gadgets for binary with custom backward search depth,',
+        print('\n'.join([ 'Generate ROP gadgets for binary with custom backward search depth,',
                             'the result will be saved to file binary.ggt',
                             'Usage: generate binary [depth]',
                             'Example: generate /lib/libc.so.6 4',
-                       ])
+                       ]))
 
     # load gadgets from file
     def do_l(self, line):
@@ -89,18 +89,18 @@ class ROPShell(cmd.Cmd):
         try:
             open(gadget_file, 'r')
         except:             
-            print "Cannot access " + gadget_file
+            print("Cannot access " + gadget_file)
             return ''
         
         self.__gadgets.load_asm(gadget_file)
-        print "OK"
+        print("OK")
         return ''
         
     def help_load(self):
-        print '\n'.join([ 'Load ROP gadgets from gadget_file',
+        print('\n'.join([ 'Load ROP gadgets from gadget_file',
                             'Usage: load gadget_file',
                             'Example: load libc.ggt',
-                       ])
+                       ]))
 
     # search gadgets
     def do_s(self, line):
@@ -113,7 +113,7 @@ class ROPShell(cmd.Cmd):
             return ''
         
         if self.__gadgets.info()["hash"] == "":
-            print "Gadgets are not loaded"
+            print("Gadgets are not loaded")
             return ''
         
         search_code = ""    
@@ -125,7 +125,7 @@ class ROPShell(cmd.Cmd):
             else:
                 search_code += " " + s
             
-        print "Searching for ROP gadget: " + search_code + " with constraints:", constraints
+        print("Searching for ROP gadget: " + search_code + " with constraints:", constraints)
         
         output = ""
         for result in self.__gadgets.asm_search(search_code, [set(constraints), set([])]):
@@ -140,12 +140,12 @@ class ROPShell(cmd.Cmd):
         return ''
         
     def help_search(self):
-        print '\n'.join([ 'Search for ROP gadgets, support wildcard matching ?, %',
+        print('\n'.join([ 'Search for ROP gadgets, support wildcard matching ?, %',
                             'Usage: search gadget [-exclude_instruction]',
                             'Example: search mov eax ? # search for all gadgets contains "mov eax"',
                             'Example: search add [ eax % ] % # search for all gadgets starting with "add [eax"', 
                             'Example: search pop eax % -leave # search for all gadgets starting with "pop eax" and not contain "leave"',
-                       ])
+                       ]))
 
     # run external shell commands
     def do_shell(self, line):
@@ -154,10 +154,10 @@ class ROPShell(cmd.Cmd):
         self.__page(output)
 
     def help_shell(self):
-        print '\n'.join([ 'Run external shell commands',
+        print('\n'.join([ 'Run external shell commands',
                             'Usage: ! cmd or shell cmd',
                             'Example: ! ls',
-                       ])
+                       ]))
                 
     # precmd processing
     def precmd(self, line):
@@ -169,9 +169,9 @@ class ROPShell(cmd.Cmd):
         if arg == '?':
             cmds = self.completenames(cmd)
             if len(cmds) > 1:
-                print "Possible commands:"
+                print("Possible commands:")
                 self.columnize(cmds)
-                print ""
+                print("")
             return cmd
 
         return line
@@ -189,12 +189,12 @@ class ROPShell(cmd.Cmd):
                 getattr(self, "help_" + cmds[0])()
                 return ''
             
-        print '\n'.join([ 'Available commands: type help <command> for detail',
-                       ])
+        print('\n'.join([ 'Available commands: type help <command> for detail',]))
+
         doc_strings = [ (i[3:], getattr(self, i).__doc__) for i in dir(self) if i.startswith('do_') ]
         doc_strings = [ '  %s\t%s\n' % (i.ljust(10, " "), j) for i, j in doc_strings if j is not None ]
         doc_strings += [ '  %s\t%s\n' % ("^D".ljust(10), "Exit")]
-        print ''.join(doc_strings)
+        print(''.join(doc_strings))
 
     def do_EOF(self, line):
         return True
@@ -206,7 +206,7 @@ class ROPShell(cmd.Cmd):
         text = str.split('\n')
         length = len(text)
         for linenum in range(length):
-            print text[linenum]
+            print(text[linenum])
             if linenum % lines == 0 and linenum >= lines:
                 key = raw_input('--More-- (%d/%d)' % (linenum-1, length))
                 if key == 'q': 

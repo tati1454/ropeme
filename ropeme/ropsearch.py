@@ -107,7 +107,7 @@ def search_gadget_addmem(gadget, flag = 0):
 # check ROP sequence for file
 def checkfile(filename, depth = 1, verbose = 0):
     if verbose != 0:
-        print >>sys.stderr, "Searching ROP sequences for binary:", filename
+        print("Searching ROP sequences for binary:", filename)
         
     gadget = ROPGadget(debug=0)
     gadget.generate(filename, backward_depth = depth)
@@ -120,18 +120,18 @@ def checkfile(filename, depth = 1, verbose = 0):
     
     if verbose != 0:
         if result != []:
-            print >>sys.stderr, "Found ROP sequences for file %s:" % filename
+            print("Found ROP sequences for file %s:" % filename)
             for sequence in result:
-                print >>sys.stderr, "### start ###"
+                print("### start ###")
                 for (code, offset) in sequence:
-                    print >>sys.stderr, "# %s = 0x%x" % (code, offset)
-                print >>sys.stderr, "### end ###"
+                    print("# %s = 0x%x" % (code, offset))
+                print("### end ###")
             for sequence in result:
                 if " ".join([str(s) for s in sequence]).find("leave") != -1:
-                    print >>sys.stderr, "Warning: trailing \"leave\" found in ROP sequence:", sequence
+                    print("Warning: trailing \"leave\" found in ROP sequence:", sequence)
                     break
         else:
-            print >>sys.stderr, "Could not find ROP sequences for file %s" % filename
+            print("Could not find ROP sequences for file %s" % filename)
             
     return result
 
@@ -139,7 +139,7 @@ if (__name__ == "__main__"):
     try:
         filename = sys.argv[1]
     except:
-        print "Usage: %s <filepath> [depth]" % sys.argv[0] 
+        print("Usage: %s <filepath> [depth]" % sys.argv[0])
     
     depth = 3
     try:

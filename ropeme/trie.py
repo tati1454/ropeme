@@ -279,7 +279,7 @@ class Trie:
         result = []
         indices = self.__index_table.get(value, [])
         for key in indices:
-			result.append(key[1])
+            result.append(key[1])
         return result
 
 
@@ -305,16 +305,16 @@ if (__name__ == "__main__"):
         t.retrieve(list(key))
 
     a = t.retrieve(list("w?ll*"))
-    print a, len(a)
+    print(a, len(a))
 
     for word in text.split():
         t.remove(word)
-        print t.get_size()
+        print(t.get_size())
 
     for word in keys:
         t.insert(list(word), word)
-        print t.get_size()
+        print(t.get_size())
 
     a = t.retrieve(list("t*"))
-    print a, len(a)
+    print(a, len(a))
 

