@@ -65,6 +65,7 @@ class Elf:
     def read_headers(self, binfile):
         cmd = self.READELF + " -W -S " + binfile
         out = Popen(cmd, shell=True, stdout=PIPE).communicate()[0]
+        out = out.decode("utf-8")
         out = out.split("\n")
 
         for line in out:

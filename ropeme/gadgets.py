@@ -35,7 +35,7 @@ import hashlib
 import os
 import pprint
 
-RET_CODE = {"ret" : "\xc3"} # return opcode
+RET_CODE = {"ret" : b"\xc3"} # return opcode
 # useless instructions, we will not put these to gadgets
 BAD_INSTS = ["DB", "CALL 0x", "JMP 0x", "JN", "JE", "JZ", "JB", "JA", "JAE", "JO", "IN", "HLT", "LES", "FLD"]
 
@@ -75,7 +75,7 @@ class ROPGadget:
         self.__gadget_info["data_addr"] = data_addr
 
         block_size = 1024 * 1024 # process 1 MB a time
-        block_count = len(code)/block_size + 1
+        block_count = len(code)//block_size + 1
         print("Generating gadgets for " + filename + " with backward depth=" + str(backward_depth))
         print("It may take few minutes depends on the depth and file size...")
         for count in range(block_count):
@@ -83,18 +83,18 @@ class ROPGadget:
             block_start = count * block_size
             disassembly = distorm.DecodeGenerator(block_start, code[block_start:block_start + block_size], self.__decode_option)
 
-            bincode = "" # keep track of hex code
+            bincode = b"" # keep track of hex code
             for (offset, size, instruction, hexdump) in disassembly:
                 hexbyte = hexdump.replace(" ", "")
                 if len(hexbyte) % 2 != 0:  # invalid hexdump?, cut the last char
                     hexbyte = hexbyte[:-1]
-                hexbyte = hexbyte.decode('hex')
+                hexbyte = bytearray.fromhex(hexbyte)
                 bincode += hexbyte
                 l = len(hexbyte)
                 i = hexbyte.find(RET_CODE["ret"]) # find RET in opcode
 
                 if i != -1: # RET found
-                    self.__LOG("Found RET at 0x%x" % (long(offset) + i))
+                    self.__LOG("Found RET at 0x%x" % (offset + i))
                     # get back (__backward_depth * 8) bytes, enough?
                     hexbyte = bincode[-((l-i) + (self.__backward_depth * 8)) : -(l-i)]
                     self.__process_backward(hexbyte, base_addr + offset + i - 1)
@@ -107,7 +107,7 @@ class ROPGadget:
     # backward process for code from RET
     #
     def __process_backward(self, hexbyte, end_offset):
-        self.__LOG("Backward process: " + hexbyte.encode('hex') + ", offset: " + hex(end_offset))
+        self.__LOG("Backward process: " + hexbyte.hex() + ", offset: " + hex(end_offset))
         RET = RET_CODE["ret"]
         l = len(hexbyte)
         for i in range(l):
@@ -117,7 +117,7 @@ class ROPGadget:
             disassembly = distorm.DecodeGenerator(end_offset - i, code, self.__decode_option)
             disassembly = list(disassembly)
             if len(disassembly) <= self.__backward_depth + 1: # max backward depth not reach
-                if disassembly[-1][-1].lower() != RET.encode('hex'): # invalid sequence
+                if disassembly[-1][-1].lower() != RET.hex(): # invalid sequence
                     continue
                 asmcode = []
                 for (offset, size, instruction, hexdump) in disassembly[:-1]:
@@ -218,7 +218,7 @@ class ROPGadget:
     # dump the gadgets to data file
     #
     def save_asm(self, filename):
-        fp = open(filename, 'w')
+        fp = open(filename, 'wb')
         print("Dumping asm gadgets to file:", filename, "...")
         pickle.dump(self.__gadget_info, fp, 0)
         pickle.dump(self.__asmgadget, fp, 0)
